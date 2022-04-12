@@ -1,32 +1,21 @@
 package com.example.demo.model;
 
 
-
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "User")
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "Name")
     private String name;
 
-    @Column(name = "Role")
     private String role;
 
-    @Column(name = "Address")
     private String address;
 
-    @Column(name = "Age")
     private Long age;
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api")
@@ -19,7 +20,7 @@ public class MainController {
 
     @PutMapping(value = "/add-user")
     @Description(value = "add User")
-    public ResponseEntity<String> addUser(@Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<String> addUser(@Valid @RequestBody UserRequest userRequest) throws SQLException {
         userService.addUser(userRequest);
         return new ResponseEntity<String>("add successes", HttpStatus.OK);
     }

@@ -1,11 +1,15 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.request.UserRequest;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+import java.sql.SQLException;
 
-     User findFirstById(Long userId);
+@Repository
+public interface UserRepository  {
+
+     public User findUserById(Long userId) throws SQLException;
+
+     public void addUser(UserRequest userRequest);
 }

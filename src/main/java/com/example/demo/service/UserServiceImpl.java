@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
+import java.sql.SQLException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,14 +17,13 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    @Transactional
-    public void addUser(UserRequest userRequest) {
-        User user = userRepository.findFirstById(userRequest.getUserId());
+    public void addUser(UserRequest userRequest) throws SQLException {
+        User user = userRepository.findUserById(userRequest.getUserId());
         if (!ObjectUtils.isEmpty(user)) {
             // throw message (ExceptionHandler)
             return;
         }
         //add
-        userRepository.save(user);
+       // userRepository.save(user);
     }
 }
