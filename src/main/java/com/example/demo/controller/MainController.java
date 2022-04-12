@@ -1,17 +1,26 @@
 package com.example.demo.controller;
 
+import com.example.demo.request.UserRequest;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Description;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
 public class MainController {
 
-    @GetMapping(value = "/contact/")
-    public ResponseEntity<String> listAllContact() {
-        return new ResponseEntity<String>("acc", HttpStatus.INTERNAL_SERVER_ERROR);
+    @Autowired
+    private UserService userService;
+
+    @PutMapping(value = "/add-user")
+    @Description(value = "add User")
+    public ResponseEntity<String> addUser(@Valid @RequestBody UserRequest userRequest) {
+        userService.addUser(userRequest);
+        return new ResponseEntity<String>("add successes", HttpStatus.OK);
     }
 }
