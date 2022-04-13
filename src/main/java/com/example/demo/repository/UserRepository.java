@@ -2,14 +2,22 @@ package com.example.demo.repository;
 
 import com.example.demo.model.User;
 import com.example.demo.request.UserRequest;
+import com.example.demo.request.UserSearchRequest;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
-public interface UserRepository  {
+public interface UserRepository {
 
-     public User findUserById(Long userId) throws SQLException;
+    User findUserById(Long userId) throws SQLException;
 
-     public void addUser(UserRequest userRequest);
+    void addUser(UserRequest userRequest) throws SQLException;
+
+    void deleteUser(Long userId) throws SQLException;
+
+    void editUser(UserRequest userRequest) throws SQLException;
+
+    List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException;
 }

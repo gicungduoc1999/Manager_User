@@ -10,9 +10,9 @@ public class ConnectionUtils {
 
     private static final String PASSWORD ="1";
 
-    public Connection getConnection() throws SQLException, ClassNotFoundException {
+    public static Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
-        String connectionURL = "jdbc:mysql://localhost:8081/ManagerUser";
+        String connectionURL = "jdbc:sqlserver://localhost;databaseName=ManagerUser";
         return  DriverManager.getConnection(connectionURL, USERNAME, PASSWORD);
     }
 }

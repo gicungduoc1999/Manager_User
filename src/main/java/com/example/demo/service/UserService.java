@@ -1,8 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.model.User;
 import com.example.demo.request.UserRequest;
+import com.example.demo.request.UserSearchRequest;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /*
  * @author: mrd
@@ -11,8 +14,26 @@ import java.sql.SQLException;
 public interface UserService {
 
     /*
-     * @param: userId
+     * @param: UserRequest
      * @description: add new user
      */
-    public void addUser(UserRequest userRequest) throws SQLException;
+    void addUser(UserRequest userRequest) throws SQLException;
+
+    /*
+     * @param: userId
+     * @description: delete new user
+     */
+    void deleteUser(Long userId) throws SQLException;
+
+    /*
+     * @param: UserRequest
+     * @description: edit new user
+     */
+    void editUser(UserRequest userRequest) throws SQLException;
+
+    /*
+     * @param: UserSearchRequest
+     * @description: search user
+     */
+    List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException;
 }
