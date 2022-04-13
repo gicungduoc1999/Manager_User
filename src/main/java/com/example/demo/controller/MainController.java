@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.BusinessException;
 import com.example.demo.model.User;
 import com.example.demo.request.UserRequest;
 import com.example.demo.request.UserSearchRequest;
@@ -29,9 +30,14 @@ public class MainController {
         try {
             userService.addUser(userRequest);
         } catch (SQLException E) {
-            return ResponseEntity.ok(new EntityCustomResponse(1, "user exist", 500, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 500, null));
+        }catch (BusinessException businessException) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), 902, null));
         }
-        return ResponseEntity.ok(new EntityCustomResponse(1, "add success", 200, null));
+        catch (Exception exception) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error system ", 500, null));
+        }
+        return ResponseEntity.ok(new EntityCustomResponse(1, "Add success", 200, null));
     }
 
     @PostMapping(value = "/delete-user")
@@ -40,9 +46,14 @@ public class MainController {
         try {
             userService.deleteUser(userId);
         } catch (SQLException E) {
-            return ResponseEntity.ok(new EntityCustomResponse(1, "user not found", 404, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 500, null));
+        }catch (BusinessException businessException) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), 404, null));
         }
-        return ResponseEntity.ok(new EntityCustomResponse(1, "delete successes", 200, null));
+        catch (Exception exception) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error system ", 500, null));
+        }
+        return ResponseEntity.ok(new EntityCustomResponse(1, "Delete successes", 200, null));
     }
 
     @PutMapping(value = "/edit-user")
@@ -50,10 +61,15 @@ public class MainController {
     public ResponseEntity<EntityCustomResponse> editUser(@Valid @RequestBody UserRequest userRequest) {
         try {
             userService.editUser(userRequest);
-        } catch (SQLException E) {
-            return ResponseEntity.ok(new EntityCustomResponse(1, "user not found", 404, null));
+        }catch (SQLException E) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 500, null));
+        }catch (BusinessException businessException) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), 404, null));
         }
-        return ResponseEntity.ok(new EntityCustomResponse(1, "edit successes", 200, null));
+        catch (Exception exception) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error system ", 500, null));
+        }
+        return ResponseEntity.ok(new EntityCustomResponse(1, "Edit successes", 200, null));
     }
 
     @GetMapping(value = "/search-user")
@@ -63,9 +79,14 @@ public class MainController {
         try {
             users= userService.searchUser(userSearchRequest);
         } catch (SQLException E) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, "Error system", 500, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 500, null));
+        }catch (BusinessException businessException) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), 404, null));
         }
-        return ResponseEntity.ok(new EntityCustomResponse(1, "user information", 200, Collections.singletonList(users)));
+        catch (Exception exception) {
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error system ", 500, null));
+        }
+        return ResponseEntity.ok(new EntityCustomResponse(1, "User information", 200, Collections.singletonList(users)));
     }
 
     @PostMapping(value = "/add-5tr")

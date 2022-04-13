@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     public void addUser(UserRequest userRequest) throws SQLException {
         User user = userRepository.findUserById(userRequest.getUserId());
         if (!ObjectUtils.isEmpty(user)) {
-            throw new BusinessException("user exist");
+            throw new BusinessException("User exists");
         }
         userRepository.addUser(userRequest);
     }
@@ -31,8 +31,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) throws SQLException {
         User user = userRepository.findUserById(userId);
         if (ObjectUtils.isEmpty(user)) {
-            // throw message (ExceptionHandler)
-            throw new SQLException();
+            throw new BusinessException("User not found");
         }
         userRepository.deleteUser(userId);
     }
@@ -41,15 +40,18 @@ public class UserServiceImpl implements UserService {
     public void editUser(UserRequest userRequest) throws SQLException {
         User user = userRepository.findUserById(userRequest.getUserId());
         if (ObjectUtils.isEmpty(user)) {
-            // throw message (ExceptionHandler)
-            throw new SQLException();
+            throw new BusinessException("User not found");
         }
         userRepository.editUser(userRequest);
     }
 
     @Override
     public List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException {
-        return userRepository.searchUser(userSearchRequest);
+        List<User> users = userRepository.searchUser(userSearchRequest);
+        if (ObjectUtils.isEmpty(users)) {
+            throw new BusinessException("User not found");
+        }
+        return users;
     }
 
     @Override
