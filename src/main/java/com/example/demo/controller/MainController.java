@@ -53,7 +53,7 @@ public class MainController {
         } catch (SQLException E) {
             return ResponseEntity.ok(new EntityCustomResponse(1, "user not found", 404, null));
         }
-        return ResponseEntity.ok(new EntityCustomResponse(1, "delete successes", 200, null));
+        return ResponseEntity.ok(new EntityCustomResponse(1, "edit successes", 200, null));
     }
 
     @GetMapping(value = "/search-user")

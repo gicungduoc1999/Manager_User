@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.BusinessException;
 import com.example.demo.model.User;
 import com.example.demo.request.UserRequest;
 import com.example.demo.repository.UserRepository;
@@ -21,8 +22,7 @@ public class UserServiceImpl implements UserService {
     public void addUser(UserRequest userRequest) throws SQLException {
         User user = userRepository.findUserById(userRequest.getUserId());
         if (!ObjectUtils.isEmpty(user)) {
-            // throw message (ExceptionHandler)
-            throw new SQLException();
+            throw new BusinessException("user exist");
         }
         userRepository.addUser(userRequest);
     }

@@ -28,9 +28,8 @@ public class UserRepositoryImpl implements UserRepository {
         String sql = "select * from [User] where id=?";
         Connection con = null;
         PreparedStatement pre = null;
-        ConnectionUtils connectionUtils = new ConnectionUtils();
         try {
-            con = connectionUtils.getConnection();
+            con = ConnectionUtils.getConnection();
             pre = con.prepareStatement(sql);
             pre.setLong(1, userId);
             ResultSet resultSet = pre.executeQuery();
@@ -153,7 +152,6 @@ public class UserRepositoryImpl implements UserRepository {
         sql.append(" where (1=1) ");
         Connection con = null;
         PreparedStatement pre = null;
-        ConnectionUtils connectionUtils = new ConnectionUtils();
         if (!ObjectUtils.isEmpty(userSearchRequest.getUserId())) {
             sql.append(" and id = ");
             sql.append(userSearchRequest.getUserId());
@@ -171,7 +169,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
         sql.append(" order by Name ");
         try {
-            con = connectionUtils.getConnection();
+            con = ConnectionUtils.getConnection();
             pre = con.prepareStatement(sql.toString());
             ResultSet resultSet = pre.executeQuery();
             while (resultSet.next()) {
