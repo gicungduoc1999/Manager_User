@@ -67,4 +67,15 @@ public class MainController {
         }
         return ResponseEntity.ok(new EntityCustomResponse(1, "user information", 200, Collections.singletonList(users)));
     }
+
+    @PostMapping(value = "/add-5tr")
+    @Description(value = "add random 5.000.000 user")
+    public ResponseEntity<EntityCustomResponse> add5tr() {
+        try {
+            userService.add5tr();
+        } catch (SQLException E) {
+            return ResponseEntity.ok(new EntityCustomResponse(1, "Error system ", 404, null));
+        }
+        return ResponseEntity.ok(new EntityCustomResponse(1, "add 5000000 successes", 200, null));
+    }
 }

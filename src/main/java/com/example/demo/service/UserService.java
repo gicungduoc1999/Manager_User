@@ -36,4 +36,9 @@ public interface UserService {
      * @description: search user
      */
     List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException;
+
+    /*
+     * @description: add 5tr user
+     */
+    void add5tr() throws SQLException;
 }

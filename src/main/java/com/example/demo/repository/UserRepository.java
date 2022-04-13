@@ -20,4 +20,6 @@ public interface UserRepository {
     void editUser(UserRequest userRequest) throws SQLException;
 
     List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException;
+
+    void add5tr() throws SQLException;
 }

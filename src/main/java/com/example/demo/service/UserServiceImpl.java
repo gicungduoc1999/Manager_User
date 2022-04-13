@@ -51,4 +51,9 @@ public class UserServiceImpl implements UserService {
     public List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException {
         return userRepository.searchUser(userSearchRequest);
     }
+
+    @Override
+    public void add5tr() throws SQLException {
+        userRepository.add5tr();
+    }
 }

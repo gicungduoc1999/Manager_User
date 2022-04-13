@@ -193,4 +193,47 @@ public class UserRepositoryImpl implements UserRepository {
         }
         return users;
     }
+
+    @Override
+    public void add5tr() throws SQLException {
+        String sql = "INSERT INTO [dbo].[User]\n" +
+                "           ([Role]\n" +
+                "           ,[Name]\n" +
+                "           ,[Address]\n" +
+                "           ,[Age])\n" +
+                "     VALUES\n" +
+                "           (?\n" +
+                "           ,?\n" +
+                "           ,?\n" +
+                "           ,?)";
+        Connection con = null;
+        PreparedStatement pre = null;
+        try {
+            con = ConnectionUtils.getConnection();
+            pre = con.prepareStatement(sql);
+            con.setAutoCommit(false);
+            Long count = 0L;
+            while (true) {
+                if (count == 5000000) {
+                    break;
+                }
+                pre.setString(1, "ADMIN " + count);
+                pre.setString(2, "Mr D " + count);
+                pre.setString(3, "Hoa Binh " + count);
+                pre.setLong(4, count);
+                pre.addBatch();
+                count++;
+            }
+            pre.executeBatch();
+            con.commit();
+        } catch (Exception e) {
+            con.rollback();
+            con.close();
+            pre.close();
+
+        } finally {
+            con.close();
+            pre.close();
+        }
+    }
 }
