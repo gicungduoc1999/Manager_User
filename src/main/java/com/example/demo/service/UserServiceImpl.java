@@ -4,12 +4,18 @@ import com.example.demo.exception.BusinessException;
 import com.example.demo.model.User;
 import com.example.demo.request.UserRequest;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.response.EntityCustomResponse;
+import com.example.demo.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,13 +24,23 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public void addUser(UserRequest userRequest) throws SQLException {
-        validateUser(userRequest);
-        User user = userRepository.findUserById(userRequest.getUserId());
-        if (!ObjectUtils.isEmpty(user)) {
-            throw new BusinessException(902, "User exists");
+    public EntityCustomResponse addUser(UserRequest userRequest) {
+        try {
+            validateUser(userRequest);
+            User user = userRepository.findUserById(userRequest.getUserId());
+            if (!ObjectUtils.isEmpty(user)) {
+                throw new BusinessException(902, "User exists");
+            }
+            userRepository.addUser(userRequest);
+
+        } catch (BusinessException businessException) {
+            return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
+        } catch (SQLException E) {
+            return new EntityCustomResponse(0, "Error when querying data into database", 901, List.of());
+        } catch (Exception exception) {
+            return new EntityCustomResponse(0, "Error system ", 500, List.of());
         }
-        userRepository.addUser(userRequest);
+        return new EntityCustomResponse(1, "Add success", 200, List.of());
     }
 
     private void validateUser(UserRequest userRequest) {
@@ -40,35 +56,71 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) throws SQLException {
-        User user = userRepository.findUserById(userId);
-        if (ObjectUtils.isEmpty(user)) {
-            throw new BusinessException(404, "User not found");
+    public EntityCustomResponse deleteUser(Long userId) {
+        try {
+            User user = userRepository.findUserById(userId);
+            if (ObjectUtils.isEmpty(user)) {
+                throw new BusinessException(404, "User not found");
+            }
+            userRepository.deleteUser(userId);
+
+        } catch (BusinessException businessException) {
+            return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
+        } catch (SQLException E) {
+            return new EntityCustomResponse(0, "Error when querying data into database", 901, List.of());
+        } catch (Exception exception) {
+            return new EntityCustomResponse(0, "Error system ", 500, List.of());
         }
-        userRepository.deleteUser(userId);
+        return new EntityCustomResponse(1, "Delete successes", 200, List.of());
     }
 
     @Override
-    public void editUser(UserRequest userRequest) throws SQLException {
-        validateUser(userRequest);
-        User user = userRepository.findUserById(userRequest.getUserId());
-        if (ObjectUtils.isEmpty(user)) {
-            throw new BusinessException(404, "User not found");
+    public EntityCustomResponse editUser(UserRequest userRequest) {
+        try {
+            validateUser(userRequest);
+            User user = userRepository.findUserById(userRequest.getUserId());
+            if (ObjectUtils.isEmpty(user)) {
+                throw new BusinessException(404, "User not found");
+            }
+            userRepository.editUser(userRequest);
+
+        } catch (BusinessException businessException) {
+            return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
+        } catch (SQLException E) {
+            return new EntityCustomResponse(0, "Error when querying data into database", 901, List.of());
+        } catch (Exception exception) {
+            return new EntityCustomResponse(0, "Error system ", 500, List.of());
         }
-        userRepository.editUser(userRequest);
+        return new EntityCustomResponse(1, "Edit successes", 200, List.of());
     }
 
     @Override
-    public List<User> searchUser(UserRequest userRequest) throws SQLException {
-        List<User> users = userRepository.searchUser(userRequest);
-        if (ObjectUtils.isEmpty(users)) {
-            throw new BusinessException(404, "User not found");
+    public EntityCustomResponse searchUser(UserRequest userRequest) {
+        List<UserResponse> userResponses;
+        try {
+            List<User> users = userRepository.searchUser(userRequest);
+            if (ObjectUtils.isEmpty(users)) {
+                throw new BusinessException(404, "User not found");
+            }
+            userResponses = users.stream().map(user -> UserResponse.toUserResponse(user)).collect(Collectors.toList());
+
+        } catch (BusinessException businessException) {
+            return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
+        } catch (SQLException E) {
+            return new EntityCustomResponse(0, "Error when querying data into database", 901, List.of());
+        } catch (Exception exception) {
+            return new EntityCustomResponse(0, "Error system ", 500, List.of());
         }
-        return users;
+        return new EntityCustomResponse(1, "User information", 200, Collections.singletonList(userResponses));
     }
 
     @Override
-    public void add5tr() throws SQLException {
-        userRepository.add5tr();
+    public EntityCustomResponse add5tr() {
+        try {
+            userRepository.add5tr();
+        } catch (SQLException E) {
+            return new EntityCustomResponse(0, "Error system ", 404, List.of());
+        }
+        return new EntityCustomResponse(1, "add 5000000 successes", 200, List.of());
     }
 }

@@ -7,6 +7,8 @@ import java.sql.SQLException;
 
 public class ConnectionUtils {
 
+    private static ConnectionUtils instance;
+
     private static final String USERNAME = "sa";
 
     private static final String PASSWORD = "1";
@@ -19,7 +21,13 @@ public class ConnectionUtils {
 
     private static BasicDataSource dataSource = new BasicDataSource();
 
+    private ConnectionUtils() {
+    }
+
     public static Connection getConnection() throws SQLException {
+        if (instance == null) {
+            instance = new ConnectionUtils();
+        }
         dataSource.setUrl(CONNECTION_URL);
         dataSource.setUsername(USERNAME);
         dataSource.setPassword(PASSWORD);

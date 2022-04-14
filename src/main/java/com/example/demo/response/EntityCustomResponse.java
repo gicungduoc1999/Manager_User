@@ -19,7 +19,6 @@ public class EntityCustomResponse {
 
     private int code;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<Object> date;
+    private List<Object> data;
 
 }

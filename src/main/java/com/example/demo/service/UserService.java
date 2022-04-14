@@ -1,11 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.model.User;
+
 import com.example.demo.request.UserRequest;
+import com.example.demo.response.EntityCustomResponse;
 
 
 import java.sql.SQLException;
-import java.util.List;
+
 
 /*
  * @author: mrd
@@ -17,28 +18,28 @@ public interface UserService {
      * @param: UserRequest
      * @description: add new user
      */
-    void addUser(UserRequest userRequest) throws SQLException;
+    EntityCustomResponse addUser(UserRequest userRequest);
 
     /*
      * @param: userId
      * @description: delete new user
      */
-    void deleteUser(Long userId) throws SQLException;
+    EntityCustomResponse deleteUser(Long userId);
 
     /*
      * @param: UserRequest
      * @description: edit new user
      */
-    void editUser(UserRequest userRequest) throws SQLException;
+    EntityCustomResponse editUser(UserRequest userRequest);
 
     /*
      * @param: UserSearchRequest
      * @description: search user
      */
-    List<User> searchUser(UserRequest userRequest) throws SQLException;
+    EntityCustomResponse searchUser(UserRequest userRequest);
 
     /*
      * @description: add 5tr user
      */
-    void add5tr() throws SQLException;
+    EntityCustomResponse add5tr();
 }
