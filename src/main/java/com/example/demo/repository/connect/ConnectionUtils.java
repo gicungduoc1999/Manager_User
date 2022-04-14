@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class ConnectionUtils {
 
-    private static ConnectionUtils instance;
+    private static ConnectionUtils instance = new ConnectionUtils();
 
     private static final String USERNAME = "sa";
 
@@ -24,10 +24,11 @@ public class ConnectionUtils {
     private ConnectionUtils() {
     }
 
-    public static Connection getConnection() throws SQLException {
-        if (instance == null) {
-            instance = new ConnectionUtils();
-        }
+    public static ConnectionUtils getInstance(){
+        return instance;
+    }
+
+    public Connection getConnection() throws SQLException {
         dataSource.setUrl(CONNECTION_URL);
         dataSource.setUsername(USERNAME);
         dataSource.setPassword(PASSWORD);

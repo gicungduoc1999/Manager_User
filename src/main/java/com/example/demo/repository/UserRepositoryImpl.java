@@ -28,8 +28,9 @@ public class UserRepositoryImpl implements UserRepository {
         String sql = "select * from [User] where id=?";
         Connection con = null;
         PreparedStatement pre = null;
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         try {
-            con = ConnectionUtils.getConnection();
+            con = connectionUtils.getConnection();
             pre = con.prepareStatement(sql);
             pre.setLong(1, userId);
             ResultSet resultSet = pre.executeQuery();
@@ -67,8 +68,9 @@ public class UserRepositoryImpl implements UserRepository {
                 "           ,?)";
         Connection con = null;
         PreparedStatement pre = null;
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         try {
-            con = ConnectionUtils.getConnection();
+            con = connectionUtils.getConnection();
             pre = con.prepareStatement(sql);
             con.setAutoCommit(false);
             pre.setString(1, userRequest.getRole());
@@ -93,8 +95,9 @@ public class UserRepositoryImpl implements UserRepository {
         String sql = "delete [User] where id=?";
         Connection con = null;
         PreparedStatement pre = null;
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         try {
-            con = ConnectionUtils.getConnection();
+            con = connectionUtils.getConnection();
             pre = con.prepareStatement(sql);
             con.setAutoCommit(false);
             pre.setLong(1, userId);
@@ -121,8 +124,9 @@ public class UserRepositoryImpl implements UserRepository {
                 " WHERE id=?";
         Connection con = null;
         PreparedStatement pre = null;
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         try {
-            con = ConnectionUtils.getConnection();
+            con = connectionUtils.getConnection();
             pre = con.prepareStatement(sql);
             con.setAutoCommit(false);
             pre.setString(1, userRequest.getRole());
@@ -147,6 +151,7 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> searchUser(UserRequest userRequest) throws SQLException {
         List<User> users = new ArrayList<>();
         StringBuffer sql = new StringBuffer();
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         sql.append(" select * ");
         sql.append(" from [User] ");
         sql.append(" where (1=1) ");
@@ -169,7 +174,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
         sql.append(" order by Name ");
         try {
-            con = ConnectionUtils.getConnection();
+            con = connectionUtils.getConnection();
             pre = con.prepareStatement(sql.toString());
             ResultSet resultSet = pre.executeQuery();
             while (resultSet.next()) {
@@ -206,14 +211,19 @@ public class UserRepositoryImpl implements UserRepository {
                 "           ,?)";
         Connection con = null;
         PreparedStatement pre = null;
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         try {
-            con = ConnectionUtils.getConnection();
+            con = connectionUtils.getConnection();
             pre = con.prepareStatement(sql);
             con.setAutoCommit(false);
             Long count = 0L;
             while (true) {
                 if (count == 5000000) {
                     break;
+                }
+                if (count % 200 == 0) {
+                    pre.executeBatch();
+                    con.commit();
                 }
                 pre.setString(1, "ADMIN " + count);
                 pre.setString(2, "Mr D " + count);
