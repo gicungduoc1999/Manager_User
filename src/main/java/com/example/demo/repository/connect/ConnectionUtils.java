@@ -9,33 +9,24 @@ public class ConnectionUtils {
 
     private static ConnectionUtils instance = new ConnectionUtils();
 
-    private static final String USERNAME = "sa";
-
-    private static final String PASSWORD = "1";
-
-    private static final String CONNECTION_URL = "jdbc:sqlserver://localhost;databaseName=ManagerUser";
-
-    public static final int DB_MIN_CONNECTIONS = 2;
-
-    public static final int DB_MAX_CONNECTIONS = 4;
-
-    private static BasicDataSource dataSource = new BasicDataSource();
+    private static BasicDataSource dataSource;
 
     private ConnectionUtils() {
+        dataSource = new BasicDataSource();
+        dataSource.setUrl(ConnectionConfig.CONNECTION_URL);
+        dataSource.setUsername(ConnectionConfig.USERNAME);
+        dataSource.setPassword(ConnectionConfig.PASSWORD);
+        dataSource.setMinIdle(ConnectionConfig.DB_MIN_CONNECTIONS); // minimum number of idle connections in the pool
+        dataSource.setInitialSize(ConnectionConfig.DB_MIN_CONNECTIONS);
+        dataSource.setMaxIdle(ConnectionConfig.DB_MAX_CONNECTIONS); // maximum number of idle connections in the pool
+        dataSource.setMaxOpenPreparedStatements(100);
     }
 
-    public static ConnectionUtils getInstance(){
+    public static ConnectionUtils getInstance() {
         return instance;
     }
 
     public Connection getConnection() throws SQLException {
-        dataSource.setUrl(CONNECTION_URL);
-        dataSource.setUsername(USERNAME);
-        dataSource.setPassword(PASSWORD);
-        dataSource.setMinIdle(DB_MIN_CONNECTIONS); // minimum number of idle connections in the pool
-        dataSource.setInitialSize(DB_MIN_CONNECTIONS);
-        dataSource.setMaxIdle(DB_MAX_CONNECTIONS); // maximum number of idle connections in the pool
-        dataSource.setMaxOpenPreparedStatements(100);
         return dataSource.getConnection();
     }
 }

@@ -21,4 +21,11 @@ public class UserRequest {
     private String address;
 
     private Long age;
+
+    /*
+     * 1 : start with H
+     * 2 : contain H
+     * 3 : search name
+     */
+    private int operation;
 }

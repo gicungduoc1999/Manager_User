@@ -123,4 +123,24 @@ public class UserServiceImpl implements UserService {
         }
         return new EntityCustomResponse(1, "add 5000000 successes", 200, List.of());
     }
+
+    @Override
+    public EntityCustomResponse searchUserByName(UserRequest userRequest) {
+        List<UserResponse> userResponses;
+        try {
+            List<User> users = userRepository.searchUserByName(userRequest);
+            if (ObjectUtils.isEmpty(users)) {
+                throw new BusinessException(404, "User not found");
+            }
+            userResponses = users.stream().map(user -> UserResponse.toUserResponse(user)).collect(Collectors.toList());
+
+        } catch (BusinessException businessException) {
+            return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
+        } catch (SQLException E) {
+            return new EntityCustomResponse(0, "Error when querying data into database", 901, List.of());
+        } catch (Exception exception) {
+            return new EntityCustomResponse(0, "Error system ", 500, List.of());
+        }
+        return new EntityCustomResponse(1, "User information", 200, Collections.singletonList(userResponses));
+    }
 }

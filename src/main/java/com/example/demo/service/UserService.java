@@ -42,4 +42,10 @@ public interface UserService {
      * @description: add 5tr user
      */
     EntityCustomResponse add5tr();
+
+    /*
+     * @param: UserSearchRequest
+     * @description: search user by name
+     */
+    EntityCustomResponse searchUserByName(UserRequest userRequest);
 }

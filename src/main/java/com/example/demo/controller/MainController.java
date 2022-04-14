@@ -10,8 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.SQLException;
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/api")
@@ -22,7 +21,7 @@ public class MainController {
 
     @PutMapping(value = "/add-user")
     @Description(value = "add User")
-    public ResponseEntity<EntityCustomResponse> addUser(@Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<EntityCustomResponse> addUser(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(userService.addUser(userRequest));
     }
 
@@ -34,13 +33,13 @@ public class MainController {
 
     @PutMapping(value = "/edit-user")
     @Description(value = "edit User")
-    public ResponseEntity<EntityCustomResponse> editUser(@Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<EntityCustomResponse> editUser(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(userService.editUser(userRequest));
     }
 
     @GetMapping(value = "/search-user")
     @Description(value = "search User")
-    public ResponseEntity<EntityCustomResponse> searchUser(@Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<EntityCustomResponse> searchUser(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(userService.searchUser(userRequest));
     }
 
@@ -48,5 +47,11 @@ public class MainController {
     @Description(value = "add random 5.000.000 user")
     public ResponseEntity<EntityCustomResponse> add5tr() {
         return ResponseEntity.ok(userService.add5tr());
+    }
+
+    @GetMapping(value = "/search-user-by-name")
+    @Description(value = "search User by name")
+    public ResponseEntity<EntityCustomResponse> searchUserByName(@RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(userService.searchUserByName(userRequest));
     }
 }

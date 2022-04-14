@@ -162,7 +162,7 @@ public class UserRepositoryImpl implements UserRepository {
             sql.append(userRequest.getUserId());
         }
         if (!ObjectUtils.isEmpty(userRequest.getAddress())) {
-            sql.append(" and [Address] like '%");
+            sql.append(" and [Address] like '");
             sql.append(userRequest.getAddress());
             sql.append("%' ");
 
@@ -243,5 +243,45 @@ public class UserRepositoryImpl implements UserRepository {
             con.close();
             pre.close();
         }
+    }
+
+    @Override
+    public List<User> searchUserByName(UserRequest userRequest) throws SQLException {
+        List<User> users = new ArrayList<>();
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
+        Connection con = null;
+        PreparedStatement pre = null;
+        String sql = "";
+
+        if (userRequest.getOperation() == 1) {
+            sql = "select * from [User] where Name like '" + userRequest.getName() + "%' ";
+        } else if (userRequest.getOperation() == 2) {
+            sql = "select * from [User] where Name like '%" + userRequest.getName() + "%' ";
+        } else {
+            sql = "select * from [User] where Name = '" + userRequest.getName() + "' ";
+        }
+
+        try {
+            con = connectionUtils.getConnection();
+            pre = con.prepareStatement(sql);
+            ResultSet resultSet = pre.executeQuery();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String name = resultSet.getString("Name");
+                String role = resultSet.getString("Role");
+                String address = resultSet.getString("Address");
+                Long age = resultSet.getLong("Age");
+                User user = new User(id, name, role, address, age);
+                users.add(user);
+            }
+        } catch (Exception e) {
+            con.close();
+            pre.close();
+
+        } finally {
+            con.close();
+            pre.close();
+        }
+        return users;
     }
 }

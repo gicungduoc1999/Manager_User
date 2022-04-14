@@ -22,4 +22,6 @@ public interface UserRepository {
     List<User> searchUser(UserRequest userRequest) throws SQLException;
 
     void add5tr() throws SQLException;
+
+    List<User> searchUserByName(UserRequest userRequest) throws SQLException;
 }
