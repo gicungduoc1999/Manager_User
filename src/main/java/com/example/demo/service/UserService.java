@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.User;
 import com.example.demo.request.UserRequest;
-import com.example.demo.request.UserSearchRequest;
+
 
 import java.sql.SQLException;
 import java.util.List;
@@ -35,7 +35,7 @@ public interface UserService {
      * @param: UserSearchRequest
      * @description: search user
      */
-    List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException;
+    List<User> searchUser(UserRequest userRequest) throws SQLException;
 
     /*
      * @description: add 5tr user

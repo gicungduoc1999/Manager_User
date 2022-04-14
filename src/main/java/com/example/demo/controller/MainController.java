@@ -3,12 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.model.User;
 import com.example.demo.request.UserRequest;
-import com.example.demo.request.UserSearchRequest;
 import com.example.demo.response.EntityCustomResponse;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +28,9 @@ public class MainController {
         try {
             userService.addUser(userRequest);
         } catch (SQLException E) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 500, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 901, null));
         }catch (BusinessException businessException) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), 902, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), null));
         }
         catch (Exception exception) {
             return ResponseEntity.ok(new EntityCustomResponse(0, "Error system ", 500, null));
@@ -46,9 +44,9 @@ public class MainController {
         try {
             userService.deleteUser(userId);
         } catch (SQLException E) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 500, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 901, null));
         }catch (BusinessException businessException) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), 404, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), null));
         }
         catch (Exception exception) {
             return ResponseEntity.ok(new EntityCustomResponse(0, "Error system ", 500, null));
@@ -62,9 +60,9 @@ public class MainController {
         try {
             userService.editUser(userRequest);
         }catch (SQLException E) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 500, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 901, null));
         }catch (BusinessException businessException) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), 404, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), null));
         }
         catch (Exception exception) {
             return ResponseEntity.ok(new EntityCustomResponse(0, "Error system ", 500, null));
@@ -74,14 +72,14 @@ public class MainController {
 
     @GetMapping(value = "/search-user")
     @Description(value = "search User")
-    public ResponseEntity<EntityCustomResponse> searchUser(@Valid @RequestBody UserSearchRequest userSearchRequest) {
+    public ResponseEntity<EntityCustomResponse> searchUser(@Valid @RequestBody UserRequest userRequest) {
         List<User> users = null;
         try {
-            users= userService.searchUser(userSearchRequest);
+            users= userService.searchUser(userRequest);
         } catch (SQLException E) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 500, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, "Error when querying data into database", 901, null));
         }catch (BusinessException businessException) {
-            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), 404, null));
+            return ResponseEntity.ok(new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), null));
         }
         catch (Exception exception) {
             return ResponseEntity.ok(new EntityCustomResponse(0, "Error system ", 500, null));

@@ -4,12 +4,12 @@ package com.example.demo.repository;
 import com.example.demo.model.User;
 import com.example.demo.repository.connect.ConnectionUtils;
 import com.example.demo.request.UserRequest;
-import com.example.demo.request.UserSearchRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.Column;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -144,7 +144,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException {
+    public List<User> searchUser(UserRequest userRequest) throws SQLException {
         List<User> users = new ArrayList<>();
         StringBuffer sql = new StringBuffer();
         sql.append(" select * ");
@@ -152,19 +152,19 @@ public class UserRepositoryImpl implements UserRepository {
         sql.append(" where (1=1) ");
         Connection con = null;
         PreparedStatement pre = null;
-        if (!ObjectUtils.isEmpty(userSearchRequest.getUserId())) {
+        if (!ObjectUtils.isEmpty(userRequest.getUserId())) {
             sql.append(" and id = ");
-            sql.append(userSearchRequest.getUserId());
+            sql.append(userRequest.getUserId());
         }
-        if (!ObjectUtils.isEmpty(userSearchRequest.getAddress())) {
+        if (!ObjectUtils.isEmpty(userRequest.getAddress())) {
             sql.append(" and [Address] like '%");
-            sql.append(userSearchRequest.getAddress());
+            sql.append(userRequest.getAddress());
             sql.append("%' ");
 
         }
-        if (!ObjectUtils.isEmpty(userSearchRequest.getName())) {
+        if (!ObjectUtils.isEmpty(userRequest.getName())) {
             sql.append(" and [Name]  like '%");
-            sql.append(userSearchRequest.getName());
+            sql.append(userRequest.getName());
             sql.append("%' ");
         }
         sql.append(" order by Name ");

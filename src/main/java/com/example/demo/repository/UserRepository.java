@@ -2,7 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.model.User;
 import com.example.demo.request.UserRequest;
-import com.example.demo.request.UserSearchRequest;
+
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ public interface UserRepository {
 
     void editUser(UserRequest userRequest) throws SQLException;
 
-    List<User> searchUser(UserSearchRequest userSearchRequest) throws SQLException;
+    List<User> searchUser(UserRequest userRequest) throws SQLException;
 
     void add5tr() throws SQLException;
 }
