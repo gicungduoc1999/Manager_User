@@ -162,15 +162,15 @@ public class UserRepositoryImpl implements UserRepository {
             sql.append(userRequest.getUserId());
         }
         if (!ObjectUtils.isEmpty(userRequest.getAddress())) {
-            sql.append(" and [Address] like '");
+            sql.append(" and [Address] = '");
             sql.append(userRequest.getAddress());
-            sql.append("%' ");
+            sql.append("' ");
 
         }
         if (!ObjectUtils.isEmpty(userRequest.getName())) {
-            sql.append(" and [Name]  like '%");
+            sql.append(" and [Name] = '");
             sql.append(userRequest.getName());
-            sql.append("%' ");
+            sql.append("' ");
         }
         sql.append(" order by Name ");
         try {
@@ -253,10 +253,11 @@ public class UserRepositoryImpl implements UserRepository {
         PreparedStatement pre = null;
         String sql = "";
 
+        //Index and search full text
         if (userRequest.getOperation() == 1) {
             sql = "select * from [User] where Name like '" + userRequest.getName() + "%' ";
         } else if (userRequest.getOperation() == 2) {
-            sql = "select * from [User] where Name like '%" + userRequest.getName() + "%' ";
+            sql = "select * from [User] where FREETEXT(Name,'"+ userRequest.getName() +"') ";
         } else {
             sql = "select * from [User] where Name = '" + userRequest.getName() + "' ";
         }
