@@ -145,7 +145,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public EntityCustomResponse addMoney(Long id, Long numberMoney) {
         try {
-            userRepository.addMoney(id, numberMoney);
+            Long oldNumber = userRepository.getMoney(id);
+            if (ObjectUtils.isEmpty(oldNumber)) {
+                throw new BusinessException(404, "User not found");
+            }
+            userRepository.updateMoney(id,oldNumber+ numberMoney);
         } catch (BusinessException businessException) {
             return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
         } catch (SQLException E) {
@@ -158,12 +162,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public EntityCustomResponse transferMoney(Long userIdA, Long userIdB, Long numberMoney) {
+        Long moneyAdd;
         try {
-            Long addMoney = userRepository.subMoney(userIdA, numberMoney);
-            if (addMoney < 0) {
-                throw new BusinessException(900, "User not enough money ");
-            }
-            userRepository.addMoney(userIdB, numberMoney);
+            Long oldMoneyUserA = userRepository.getMoney(userIdA);
+            Long oldMoneyUserB = userRepository.getMoney(userIdB);
+            validateTransferMoney(oldMoneyUserA, oldMoneyUserB, numberMoney);
+
+            userRepository.updateMoney(userIdA, oldMoneyUserA - numberMoney);
+            userRepository.updateMoney(userIdB, oldMoneyUserB + numberMoney);
+
+            moneyAdd = userRepository.getMoney(userIdB);
         } catch (BusinessException businessException) {
             return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
         } catch (SQLException E) {
@@ -171,6 +179,18 @@ public class UserServiceImpl implements UserService {
         } catch (Exception exception) {
             return new EntityCustomResponse(0, "Error system ", 500, List.of());
         }
-        return new EntityCustomResponse(1, "Transfer success for user B " + numberMoney + " $", 200, List.of());
+        return new EntityCustomResponse(1, "Transfer success for user B " + moneyAdd + " $", 200, List.of());
+    }
+
+    private void validateTransferMoney(Long oldMoneyUserA, Long oldMoneyUserB, Long numberMoney) throws BusinessException {
+        if (ObjectUtils.isEmpty(oldMoneyUserA) || ObjectUtils.isEmpty(oldMoneyUserB)) {
+            throw new BusinessException(404, "User not found");
+        }
+        if (oldMoneyUserA <= 0) {
+            throw new BusinessException(900, "UserA don't have money");
+        }
+        if (oldMoneyUserA < numberMoney) {
+            throw new BusinessException(900, "UserA not enough money (UserA : " + oldMoneyUserA + ")");
+        }
     }
 }

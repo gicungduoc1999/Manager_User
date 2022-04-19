@@ -288,12 +288,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void addMoney(Long id, Long numberMoney) throws SQLException {
+    public void updateMoney(Long id, Long numberMoney) throws SQLException {
         ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         Connection con = null;
         PreparedStatement pre = null;
-        String sql = "update [User] set Money = Money + ?\n" +
-                "from [User] \n" +
+        String sql = "update [User] set Money = ?\n" +
                 "where id = ?";
         try {
             con = connectionUtils.getConnection();
@@ -312,47 +311,6 @@ public class UserRepositoryImpl implements UserRepository {
             con.close();
             pre.close();
         }
-    }
-
-    @Override
-    public Long subMoney(Long id, Long numberMoney) throws SQLException {
-        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
-        Connection con = null;
-        PreparedStatement pre = null;
-        String sql = "update [User] set Money = Money - ?\n" +
-                "from [User] \n" +
-                "where id = ? \n" +
-                "select Money from [User] where id =?";
-        Long moneyAdd = 0L;
-        try {
-            con = connectionUtils.getConnection();
-            con.setAutoCommit(false);
-            pre = con.prepareStatement(sql);
-            pre.setLong(1, numberMoney);
-            pre.setLong(2, id);
-            pre.setLong(3, id);
-            ResultSet rs = pre.executeQuery();
-
-            while (rs.next()) {
-                moneyAdd = rs.getLong(1);
-            }
-            if (moneyAdd < 0) {
-                con.rollback();
-                con.close();
-                pre.close();
-                return moneyAdd;
-            }
-            con.commit();
-        } catch (Exception e) {
-            con.rollback();
-            con.close();
-            pre.close();
-            throw e;
-        } finally {
-            con.close();
-            pre.close();
-        }
-        return moneyAdd;
     }
 
     @Override
