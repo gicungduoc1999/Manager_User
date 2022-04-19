@@ -7,12 +7,10 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.response.EntityCustomResponse;
 import com.example.demo.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -142,5 +140,37 @@ public class UserServiceImpl implements UserService {
             return new EntityCustomResponse(0, "Error system ", 500, List.of());
         }
         return new EntityCustomResponse(1, "User information", 200, Collections.singletonList(userResponses));
+    }
+
+    @Override
+    public EntityCustomResponse addMoney(Long id, Long numberMoney) {
+        try {
+            userRepository.addMoney(id, numberMoney);
+        } catch (BusinessException businessException) {
+            return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
+        } catch (SQLException E) {
+            return new EntityCustomResponse(0, "Error when querying data into database", 901, List.of());
+        } catch (Exception exception) {
+            return new EntityCustomResponse(0, "Error system ", 500, List.of());
+        }
+        return new EntityCustomResponse(1, "Add success " + numberMoney + " $", 200, List.of());
+    }
+
+    @Override
+    public EntityCustomResponse transferMoney(Long userIdA, Long userIdB, Long numberMoney) {
+        try {
+            Long addMoney = userRepository.subMoney(userIdA, numberMoney);
+            if (addMoney < 0) {
+                throw new BusinessException(900, "User not enough money ");
+            }
+            userRepository.addMoney(userIdB, numberMoney);
+        } catch (BusinessException businessException) {
+            return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
+        } catch (SQLException E) {
+            return new EntityCustomResponse(0, "Error when querying data into database", 901, List.of());
+        } catch (Exception exception) {
+            return new EntityCustomResponse(0, "Error system ", 500, List.of());
+        }
+        return new EntityCustomResponse(1, "Transfer success for user B " + numberMoney + " $", 200, List.of());
     }
 }

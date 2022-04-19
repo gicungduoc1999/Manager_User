@@ -5,9 +5,6 @@ import com.example.demo.request.UserRequest;
 import com.example.demo.response.EntityCustomResponse;
 
 
-import java.sql.SQLException;
-
-
 /*
  * @author: mrd
  * @description: manager user
@@ -48,4 +45,16 @@ public interface UserService {
      * @description: search user by name
      */
     EntityCustomResponse searchUserByName(UserRequest userRequest);
+
+    /*
+     * @param: Long
+     * @description: add money for users
+     */
+    EntityCustomResponse addMoney(Long id, Long numberMoney);
+
+    /*
+     * @param: Long
+     * @description: transfer money for users
+     */
+    EntityCustomResponse transferMoney(Long userIdA, Long userIdB, Long numberMoney);
 }

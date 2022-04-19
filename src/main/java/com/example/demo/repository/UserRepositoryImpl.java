@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalLong;
 
 
 @Repository
@@ -257,7 +258,7 @@ public class UserRepositoryImpl implements UserRepository {
         if (userRequest.getOperation() == 1) {
             sql = "select * from [User] where Name like '" + userRequest.getName() + "%' ";
         } else if (userRequest.getOperation() == 2) {
-            sql = "select * from [User] where FREETEXT(Name,'"+ userRequest.getName() +"') ";
+            sql = "select * from [User] where FREETEXT(Name,'" + userRequest.getName() + "') ";
         } else {
             sql = "select * from [User] where Name = '" + userRequest.getName() + "' ";
         }
@@ -284,5 +285,100 @@ public class UserRepositoryImpl implements UserRepository {
             pre.close();
         }
         return users;
+    }
+
+    @Override
+    public void addMoney(Long id, Long numberMoney) throws SQLException {
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
+        Connection con = null;
+        PreparedStatement pre = null;
+        String sql = "update [User] set Money = Money + ?\n" +
+                "from [User] \n" +
+                "where id = ?";
+        try {
+            con = connectionUtils.getConnection();
+            con.setAutoCommit(false);
+            pre = con.prepareStatement(sql);
+            pre.setLong(1, numberMoney);
+            pre.setLong(2, id);
+            pre.executeUpdate();
+            con.commit();
+        } catch (Exception e) {
+            con.rollback();
+            con.close();
+            pre.close();
+            throw e;
+        } finally {
+            con.close();
+            pre.close();
+        }
+    }
+
+    @Override
+    public Long subMoney(Long id, Long numberMoney) throws SQLException {
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
+        Connection con = null;
+        PreparedStatement pre = null;
+        String sql = "update [User] set Money = Money - ?\n" +
+                "from [User] \n" +
+                "where id = ? \n" +
+                "select Money from [User] where id =?";
+        Long moneyAdd = 0L;
+        try {
+            con = connectionUtils.getConnection();
+            con.setAutoCommit(false);
+            pre = con.prepareStatement(sql);
+            pre.setLong(1, numberMoney);
+            pre.setLong(2, id);
+            pre.setLong(3, id);
+            ResultSet rs = pre.executeQuery();
+
+            while (rs.next()) {
+                moneyAdd = rs.getLong(1);
+            }
+            if (moneyAdd < 0) {
+                con.rollback();
+                con.close();
+                pre.close();
+                return moneyAdd;
+            }
+            con.commit();
+        } catch (Exception e) {
+            con.rollback();
+            con.close();
+            pre.close();
+            throw e;
+        } finally {
+            con.close();
+            pre.close();
+        }
+        return moneyAdd;
+    }
+
+    @Override
+    public Long getMoney(Long id) throws SQLException {
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
+        Connection con = null;
+        PreparedStatement pre = null;
+        String sql = "select Money from [User] where id = ?";
+        Long money = null;
+
+        try {
+            con = connectionUtils.getConnection();
+            pre = con.prepareStatement(sql);
+            pre.setLong(1, id);
+            ResultSet resultSet = pre.executeQuery();
+            while (resultSet.next()) {
+                money = resultSet.getLong("Money");
+            }
+        } catch (Exception e) {
+            con.close();
+            pre.close();
+            throw e;
+        } finally {
+            con.close();
+            pre.close();
+        }
+        return money;
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.SQLException;
 import java.util.List;
 
+
 @Repository
 public interface UserRepository {
 
@@ -24,4 +25,10 @@ public interface UserRepository {
     void add5tr() throws SQLException;
 
     List<User> searchUserByName(UserRequest userRequest) throws SQLException;
+
+    void addMoney(Long id, Long numberMoney) throws SQLException;
+
+    Long subMoney(Long id, Long numberMoney) throws SQLException;
+
+    Long getMoney(Long id) throws SQLException;
 }

@@ -54,4 +54,16 @@ public class MainController {
     public ResponseEntity<EntityCustomResponse> searchUserByName(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(userService.searchUserByName(userRequest));
     }
+
+    @PostMapping(value = "/add-money")
+    @Description(value = "add money for users")
+    public ResponseEntity<EntityCustomResponse> addMoney(@Valid Long id, @Valid Long numberMoney) {
+        return ResponseEntity.ok(userService.addMoney(id, numberMoney));
+    }
+
+    @PostMapping(value = "/transfer-money")
+    @Description(value = "transfer money for users")
+    public ResponseEntity<EntityCustomResponse> transferMoney(@Valid Long userIdA, @Valid Long userIdB, @Valid Long numberMoney) {
+        return ResponseEntity.ok(userService.transferMoney(userIdA, userIdB, numberMoney));
+    }
 }
