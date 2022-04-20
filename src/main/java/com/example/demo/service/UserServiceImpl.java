@@ -159,11 +159,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public EntityCustomResponse transferMoney(Long userIdA, Long userIdB, Long numberMoney) {
         try {
-            Long moneyUserA = userRepository.transferMoney(userIdA, userIdB, numberMoney);
-            if (moneyUserA <= 0) {
-                throw new BusinessException(900, "UserA not enough money (UserA will be negative money : " + moneyUserA + ")");
+            int rowCount = userRepository.transferMoney(userIdA, userIdB, numberMoney);
+            if (rowCount == 0) {
+                throw new BusinessException(900, "UserA not enough money");
             }
-
+            userRepository.addMoney(userIdB, numberMoney);
         } catch (BusinessException businessException) {
             return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
         } catch (SQLException E) {

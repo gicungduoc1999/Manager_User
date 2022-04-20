@@ -28,7 +28,7 @@ public interface UserRepository {
 
     void addMoney(Long id, Long numberMoney) throws SQLException;
 
-    Long transferMoney(Long userIdA, Long userIdB, Long numberMoney) throws SQLException;
+    int transferMoney(Long userIdA, Long userIdB, Long numberMoney) throws SQLException;
 
     Long getMoney(Long id) throws SQLException;
 }

@@ -315,18 +315,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Long transferMoney(Long userIdA, Long userIdB, Long numberMoney) throws SQLException {
+    public int transferMoney(Long userIdA, Long userIdB, Long numberMoney) throws SQLException {
         ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         Connection con = null;
         PreparedStatement pre = null;
         String sql = "update [User] set Money = Money - ?\n" +
                 "from [User] \n" +
-                "where id = ? " +
-                "update [User] set Money = Money + ?\n" +
-                "from [User] \n" +
-                "where id = ? " +
-                "select Money from [User] where id =?";
-        Long moneyUserA = 0L;
+                "where id = ? and Money > ? " +
+                "select @@ROWCOUNT as row  \n";
+        int rowCount = 0;
         try {
             con = connectionUtils.getConnection();
             con.setAutoCommit(false);
@@ -334,19 +331,10 @@ public class UserRepositoryImpl implements UserRepository {
             pre.setLong(1, numberMoney);
             pre.setLong(2, userIdA);
             pre.setLong(3, numberMoney);
-            pre.setLong(4, userIdB);
-            pre.setLong(5, userIdA);
-            ResultSet rs = pre.executeQuery();
-
-            while (rs.next()) {
-                moneyUserA = rs.getLong(1);
-            }
-            if (moneyUserA < 0) {
-                con.rollback();
-                con.close();
-                pre.close();
-                return moneyUserA;
-            }
+           ResultSet rs = pre.executeQuery();
+           while (rs.next()){
+               rowCount = rs.getInt(1);
+           }
             con.commit();
         } catch (Exception e) {
             con.rollback();
@@ -357,7 +345,7 @@ public class UserRepositoryImpl implements UserRepository {
             con.close();
             pre.close();
         }
-        return moneyUserA;
+        return rowCount;
     }
 
     @Override
