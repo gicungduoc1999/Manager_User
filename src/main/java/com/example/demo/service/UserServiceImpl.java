@@ -161,9 +161,8 @@ public class UserServiceImpl implements UserService {
         try {
             int rowCount = userRepository.transferMoney(userIdA, userIdB, numberMoney);
             if (rowCount == 0) {
-                throw new BusinessException(900, "UserA not enough money");
+                throw new BusinessException(900, "UserA not enough money ");
             }
-            userRepository.addMoney(userIdB, numberMoney);
         } catch (BusinessException businessException) {
             return new EntityCustomResponse(0, businessException.getMessage(), businessException.getStatusCode(), List.of());
         } catch (SQLException E) {

@@ -319,10 +319,14 @@ public class UserRepositoryImpl implements UserRepository {
         ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         Connection con = null;
         PreparedStatement pre = null;
-        String sql = "update [User] set Money = Money - ?\n" +
+        String sql = "update [User] set Money = Money - ? \n" +
                 "from [User] \n" +
-                "where id = ? and Money > ? " +
-                "select @@ROWCOUNT as row  \n";
+                "where id = ? and Money >= ? \n" +
+                "update [User] set Money = Money + ?\n" +
+                "from [User] \n" +
+                "where id = ? \n" +
+                "and  @@ROWCOUNT  = 1\n" +
+                "select @@ROWCOUNT as row";
         int rowCount = 0;
         try {
             con = connectionUtils.getConnection();
@@ -331,6 +335,8 @@ public class UserRepositoryImpl implements UserRepository {
             pre.setLong(1, numberMoney);
             pre.setLong(2, userIdA);
             pre.setLong(3, numberMoney);
+            pre.setLong(4, numberMoney);
+            pre.setLong(5, userIdB);
            ResultSet rs = pre.executeQuery();
            while (rs.next()){
                rowCount = rs.getInt(1);
