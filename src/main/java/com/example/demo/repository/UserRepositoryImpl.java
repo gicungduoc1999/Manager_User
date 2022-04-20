@@ -288,11 +288,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void updateMoney(Long id, Long numberMoney) throws SQLException {
+    public void addMoney(Long id, Long numberMoney) throws SQLException {
         ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
         Connection con = null;
         PreparedStatement pre = null;
-        String sql = "update [User] set Money = ?\n" +
+        String sql = "update [User] set Money = Money + ?\n" +
+                "from [User] \n" +
                 "where id = ?";
         try {
             con = connectionUtils.getConnection();
@@ -311,6 +312,52 @@ public class UserRepositoryImpl implements UserRepository {
             con.close();
             pre.close();
         }
+    }
+
+    @Override
+    public Long transferMoney(Long userIdA, Long userIdB, Long numberMoney) throws SQLException {
+        ConnectionUtils connectionUtils = ConnectionUtils.getInstance();
+        Connection con = null;
+        PreparedStatement pre = null;
+        String sql = "update [User] set Money = Money - ?\n" +
+                "from [User] \n" +
+                "where id = ? " +
+                "update [User] set Money = Money + ?\n" +
+                "from [User] \n" +
+                "where id = ? " +
+                "select Money from [User] where id =?";
+        Long moneyUserA = 0L;
+        try {
+            con = connectionUtils.getConnection();
+            con.setAutoCommit(false);
+            pre = con.prepareStatement(sql);
+            pre.setLong(1, numberMoney);
+            pre.setLong(2, userIdA);
+            pre.setLong(3, numberMoney);
+            pre.setLong(4, userIdB);
+            pre.setLong(5, userIdA);
+            ResultSet rs = pre.executeQuery();
+
+            while (rs.next()) {
+                moneyUserA = rs.getLong(1);
+            }
+            if (moneyUserA < 0) {
+                con.rollback();
+                con.close();
+                pre.close();
+                return moneyUserA;
+            }
+            con.commit();
+        } catch (Exception e) {
+            con.rollback();
+            con.close();
+            pre.close();
+            throw e;
+        } finally {
+            con.close();
+            pre.close();
+        }
+        return moneyUserA;
     }
 
     @Override

@@ -26,7 +26,9 @@ public interface UserRepository {
 
     List<User> searchUserByName(UserRequest userRequest) throws SQLException;
 
-    void updateMoney(Long id, Long numberMoney) throws SQLException;
+    void addMoney(Long id, Long numberMoney) throws SQLException;
+
+    Long transferMoney(Long userIdA, Long userIdB, Long numberMoney) throws SQLException;
 
     Long getMoney(Long id) throws SQLException;
 }
